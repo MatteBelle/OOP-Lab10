@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiThreadedSumMatrix implements SumMatrix {
+
     private final int nthread;
+
     public MultiThreadedSumMatrix(final int nthread) {
         this.nthread = nthread;
     }
@@ -14,7 +16,6 @@ public class MultiThreadedSumMatrix implements SumMatrix {
         private final int startpos;
         private final int nElem;
         private long res;
-
         /**
          * Build a new worker.
          * 
@@ -36,8 +37,8 @@ public class MultiThreadedSumMatrix implements SumMatrix {
         public void run() {
             System.out.println("Working from position " + startpos + " to position " + (startpos + nElem - 1));
             for (int i = startpos; i < matrix.length && i < startpos + nElem; i++) {
-                for (int j = startpos; j < matrix[i].length && j < startpos + nElem; j++) {
-                    this.res += this.matrix[i][j];
+                for (final double j : matrix[i]) {
+                    this.res += j;
                 }
             }
         }
@@ -56,19 +57,13 @@ public class MultiThreadedSumMatrix implements SumMatrix {
     @Override
     public double sum(final double[][] matrix) {
         //get total elems of the list
-        int matElems = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                matElems++;
-            }
-        }
 
-        final int size = matElems % nthread + matElems / nthread;
+        final int size = matrix.length % nthread + matrix.length / nthread;
         /*
          * Build a list of workers
          */
         final List<Worker> workers = new ArrayList<>(nthread);
-        for (int start = 0; start < matElems; start += size) {
+        for (int start = 0; start < matrix.length; start += size) {
             workers.add(new Worker(matrix, start, size));
         }
         /*
