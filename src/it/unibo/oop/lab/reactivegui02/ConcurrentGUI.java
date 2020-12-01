@@ -13,9 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-/**
- * This is a first example on how to realize a reactive GUI.
- */
 public final class ConcurrentGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -68,12 +65,6 @@ public final class ConcurrentGUI extends JFrame {
         up.addActionListener(e -> agent.choose = true);
         down.addActionListener(e -> agent.choose = false);
         stop.addActionListener(new ActionListener() {
-            /**
-             * event handler associated to action event on button stop.
-             * 
-             * @param e
-             *            the action event that will be handled by this listener
-             */
             @Override
             public void actionPerformed(final ActionEvent e) {
                 // Agent should be final
@@ -101,7 +92,7 @@ public final class ConcurrentGUI extends JFrame {
          * 
          */
         private volatile boolean stop;
-        private boolean choose = true;
+        private volatile boolean choose = true;
         private volatile int counter;
 
         @Override
@@ -115,7 +106,7 @@ public final class ConcurrentGUI extends JFrame {
                     SwingUtilities.invokeAndWait(() -> ConcurrentGUI.this.display.setText(Integer.toString(Agent.this.counter)));
                     if (choose) {
                         this.counter++;
-                    }   else if (!choose) {
+                    } else {
                         this.counter--;
                     }
                     Thread.sleep(100);
